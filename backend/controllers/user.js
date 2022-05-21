@@ -21,7 +21,7 @@ function getUserOne(req, res, next) {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        next(new BadRequestError('Нет пользователя с таким id'));
+        next(new NotFoundError('Нет пользователя с таким id'));
       } else {
         res.status(200).send(user);
       }
@@ -37,16 +37,16 @@ function getUserOne(req, res, next) {
 }
 
 const getUserById = (req, res, next) => {
-  User.findById(req.params.id)
+  User.findById(req.params.UserId)
     .then((user) => {
       if (!user) {
-        next(new BadRequestError('Нет пользователя с таким id'));
+        next(new NotFoundError('Нет пользователя с таким id'));
       }
       res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError(err.message));
+        next(new NotFoundError(err.message));
       }
     })
     .catch(next);
@@ -56,7 +56,6 @@ function addUser(req, res, next) {
   const { name, about, avatar, email, password } = req.body;
 
   bcrypt.hash(password, 10).then((hash) => {
-    // eslint-disable-next-line func-call-spacing
     User.create({
       name,
       about,
@@ -64,13 +63,7 @@ function addUser(req, res, next) {
       email,
       password: hash,
     })
-      // eslint-disable-next-line no-unused-vars
-      .then((user) => res.status(201).send({
-        name,
-        about,
-        avatar,
-        email,
-      }))
+      .then((user) => res.status(200).send(user))
       .catch((err) => {
         if (err.name === 'ValidationError') {
           next(new BadRequestError(err.message));

@@ -84,7 +84,7 @@ function App() {
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i === currentUser._id);
-    console.log(isLiked)
+    console.log(isLiked);
     api
       .changeLikeCardStatus(card._id, isLiked)
       .then((newCard) => {
@@ -188,7 +188,8 @@ function App() {
     auth
       .register(email, password)
       .then((res) => {
-        if (res.status === 201) {
+        if (res.status === 201 || res.status === 200) {
+          console.log("111111111");
           handleInfoTooltipContent({
             iconPath: registrationOk,
             text: "Вы успешно зарегестрировались!",
@@ -197,7 +198,7 @@ function App() {
           setTimeout(history.push, 3000, "/sign-in");
           setTimeout(closeAllPopups, 2500);
         }
-        if (res.status === 400) {
+        if (res.status === 409) {
           console.log("Введеный email уже зарегестрирован!");
           handleInfoTooltipContent({
             iconPath: registrationWrong,
@@ -225,6 +226,7 @@ function App() {
         if (!data) {
           throw new Error("Произошла ошибка");
         }
+        console.log(1111111)
         setEmail(email);
         setLoggedIn(true);
         handleInfoTooltipContent({
